@@ -50,14 +50,28 @@
       });
     }
 
-    function toDataFrame(data, colNames) {
-      if (data.length < 2) return [];
-      return data.slice(1).map(row => {
-        return {
-          "Registration Number": row[0],
-          [colNames[1]]: row[1]
-        };
+    // Normalize headers (so different naming still works)
+    function normalizeHeaders(headers) {
+      return headers.map(h => {
+        if (!h) return "";
+        let header = h.toString().toLowerCase().trim();
+        if (header.includes("registration")) return "Registration Number";
+        if (header.includes("ca")) return "CA Score";
+        if (header.includes("exam")) return "Exam Score";
+        return h;
       });
+    }
+
+    function arrayToObjects(data) {
+      if (data.length < 2) return [];
+      const headers = normalizeHeaders(data[0]);
+      return data.slice(1)
+        .filter(row => row.some(cell => cell !== undefined && cell !== null && cell !== ""))
+        .map(row => {
+          const obj = {};
+          headers.forEach((h, i) => obj[h] = row[i]);
+          return obj;
+        });
     }
 
     document.getElementById("mergeForm").onsubmit = async (e) => {
@@ -78,15 +92,24 @@
           readExcelFile(examFile)
         ]);
 
-        const caDF = toDataFrame(caData, ["Registration Number", "CA Score"]);
-        const examDF = toDataFrame(examData, ["Registration Number", "Exam Score"]);
+        const caArr = arrayToObjects(caData);
+        const examArr = arrayToObjects(examData);
 
-        // Merge by Registration Number
-        const regSet = new Set([...caDF.map(r => r["Registration Number"]), ...examDF.map(r => r["Registration Number"])]);
-        const merged = Array.from(regSet).map(reg => {
-          const ca = caDF.find(r => r["Registration Number"] === reg)?.["CA Score"] || "";
-          const exam = examDF.find(r => r["Registration Number"] === reg)?.["Exam Score"] || "";
-          return { "Registration Number": reg, "CA Score": ca, "Exam Score": exam };
+        // Build lookup maps
+        const caMap = {};
+        caArr.forEach(r => { caMap[r["Registration Number"]] = r["CA Score"]; });
+
+        const examMap = {};
+        examArr.forEach(r => { examMap[r["Registration Number"]] = r["Exam Score"]; });
+
+        // Merge unique registration numbers
+        const allRegs = new Set([...caArr.map(r => r["Registration Number"]), ...examArr.map(r => r["Registration Number"])]);
+        const merged = Array.from(allRegs).map(reg => {
+          return {
+            "Registration Number": reg,
+            "CA Score": caMap[reg] !== undefined ? caMap[reg] : "",
+            "Exam Score": examMap[reg] !== undefined ? examMap[reg] : ""
+          };
         });
 
         // Preview
