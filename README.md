@@ -27,7 +27,7 @@ This repository powers the static website for the CBT Merger project using [GitH
 ## Getting Started
 
 To view the site, simply visit:  
-[https://chealseainfo1.github.io/cbtmerger.github.io/](https://chealseainfo1.github.io/cbtmerger.github.io/)
+[https://chealseainfo1.github.io/cbtmerger.github.io/](https://chealseainfo1.github.io/cbtmerger/)
 
 ### Cloning the Repository
 
