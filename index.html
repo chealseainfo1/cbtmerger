@@ -24,7 +24,7 @@
   <div class="container">
     <h1>Result Merger</h1>
     <p>Upload your <b>CA Scores</b> and <b>Exam Scores</b> Excel files (<code>.xlsx</code>), and merge them by Registration Number.</p>
-    <small class="hint">Flexible headers supported: e.g. <i>Reg No., Matric No., Student ID, CA, Test, Continuous, Exam, Final</i>.</small>
+    <small class="hint">Flexible headers supported: <i>Reg No., Matric No., Student ID, CA, Test, Continuous, Exam, Final</i>.</small>
 
     <form id="mergeForm">
       <label>CA Scores Excel File:</label><br />
@@ -40,7 +40,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script>
-    // Read first sheet of an .xlsx file into a 2D array (rows)
+    // Read Excel file (first sheet only)
     function readExcelFile(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -61,45 +61,25 @@
       });
     }
 
-    // Flexible header normalization
+    // Normalize header names (robust to variations)
     function normalizeHeaders(headers) {
       return headers.map((h) => {
         if (!h) return "";
         const raw = h.toString().trim();
         const header = raw.toLowerCase();
 
-        // Registration number variations
-        if (
-          header.includes("reg") ||
-          header.includes("matric") ||
-          header.includes("student") ||
-          header.includes("adm") ||
-          header.includes("id")
-        ) return "Registration Number";
+        if (header.includes("reg") || header.includes("matric") || header.includes("student") || header.includes("id"))
+          return "Registration Number";
+        if (header === "ca" || header.includes("ca ") || header.includes(" c.a") || header.includes("continuous") || header.includes("test"))
+          return "CA Score";
+        if (header.includes("exam") || header.includes("final") || header.includes("paper"))
+          return "Exam Score";
 
-        // CA variations
-        if (
-          header === "ca" ||
-          header.includes("ca ") ||
-          header.includes(" c.a") ||
-          header.includes("continuous") ||
-          header.includes("test") ||
-          header.includes("assess")
-        ) return "CA Score";
-
-        // Exam variations
-        if (
-          header.includes("exam") ||
-          header.includes("final") ||
-          header.includes("paper")
-        ) return "Exam Score";
-
-        // default - keep original to not lose potential extra fields
-        return raw;
+        return raw; // keep as-is if unrecognized
       });
     }
 
-    // Convert 2D array to array of objects with normalized headers
+    // Convert 2D array → array of objects
     function arrayToObjectArray(data) {
       if (!data || data.length < 2) return [];
       const headers = normalizeHeaders(data[0]);
@@ -114,42 +94,39 @@
             obj[h] = row[i];
           });
 
-          // Ensure keys exist even if missing in the file
           if (!("CA Score" in obj)) obj["CA Score"] = "";
           if (!("Exam Score" in obj)) obj["Exam Score"] = "";
 
-          // Normalize Registration Number (trim + stringify)
           if (obj["Registration Number"] !== undefined && obj["Registration Number"] !== null) {
             obj["Registration Number"] = String(obj["Registration Number"]).trim();
           }
 
           return obj;
         })
-        // Keep only rows that have a valid Registration Number
         .filter((row) => row["Registration Number"]);
     }
 
-    // (Optional) coerce scores to numbers if possible
+    // Convert to number if possible
     function toNumberOrBlank(val) {
       if (val === undefined || val === null || String(val).trim() === "") return "";
       const n = Number(val);
-      return Number.isFinite(n) ? n : val; // keep original if not numeric
+      return Number.isFinite(n) ? n : val;
     }
 
-    // Outer merge by Registration Number
+    // Merge CA + Exam and add Total Score
     function outerMergeByRegistration(caArr, examArr) {
       const allRegs = new Set([
         ...caArr.map((r) => r["Registration Number"]),
         ...examArr.map((r) => r["Registration Number"]),
       ]);
 
-      const caMap = Object.create(null);
+      const caMap = {};
       caArr.forEach((r) => {
         const reg = r["Registration Number"];
         if (reg) caMap[reg] = toNumberOrBlank(r["CA Score"]);
       });
 
-      const examMap = Object.create(null);
+      const examMap = {};
       examArr.forEach((r) => {
         const reg = r["Registration Number"];
         if (reg) examMap[reg] = toNumberOrBlank(r["Exam Score"]);
@@ -157,10 +134,19 @@
 
       const merged = [];
       allRegs.forEach((reg) => {
+        const ca = caMap[reg] !== undefined ? caMap[reg] : "";
+        const exam = examMap[reg] !== undefined ? examMap[reg] : "";
+        let total = "";
+
+        if (typeof ca === "number" && typeof exam === "number") {
+          total = ca + exam;
+        }
+
         merged.push({
           "Registration Number": reg,
-          "CA Score": caMap[reg] !== undefined ? caMap[reg] : "",
-          "Exam Score": examMap[reg] !== undefined ? examMap[reg] : "",
+          "CA Score": ca,
+          "Exam Score": exam,
+          "Total Score": total
         });
       });
 
@@ -215,7 +201,7 @@
           (merged.length > 15 ? `<p>...and ${merged.length - 15} more rows.</p>` : "");
 
         // Export with consistent headers
-        const headers = ["Registration Number", "CA Score", "Exam Score"];
+        const headers = ["Registration Number", "CA Score", "Exam Score", "Total Score"];
         const ws = XLSX.utils.json_to_sheet(merged, { header: headers });
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Merged");
