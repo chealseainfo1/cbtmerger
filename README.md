@@ -32,8 +32,8 @@ To view the site, simply visit:
 ### Cloning the Repository
 
 ```bash
-git clone https://github.com/chealseainfo1/cbtmerger.github.io.git
-cd cbtmerger.github.io
+git clone https://github.com/chealseainfo1/cbtmerger.git
+cd cbtmerger
 ```
 
 ### Making Changes
