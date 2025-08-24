@@ -1,4 +1,4 @@
-# cbtmerger.github.io
+# cbtmerger
 
 Welcome to the `cbtmerger.github.io` repository!  
 This project is designed to serve as a GitHub Pages site for CBT Merger. It may include resources, documentation, demos, or a web app related to CBT Merger tools or functionality.
