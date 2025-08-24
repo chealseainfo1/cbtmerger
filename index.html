@@ -1,47 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Result Merger</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <title>Merge CA & Exam Scores</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
-    .container { background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-    h1 { color: #224488; margin-top: 0; }
-    input[type="file"] { margin: 10px 0 20px 0; }
-    button { background: #224488; color: #fff; border: none; padding: 10px 18px; font-size: 1em; border-radius: 5px; cursor: pointer; }
-    button:disabled { opacity: 0.5; }
-    .result { margin-top: 25px; }
-    table { border-collapse: collapse; width: 100%; margin-top: 15px; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-    th { background: #eaeaea; }
-    .error { color: #b30000; }
-    .success { color: #0a682d; }
-    small.hint { color: #555; display: block; margin-top: 6px; }
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .container { max-width: 600px; margin: auto; }
+    .btn { padding: 10px 20px; margin-top: 10px; cursor: pointer; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 6px; text-align: center; }
+    th { background: #f2f2f2; }
+    .success { color: green; font-weight: bold; }
+    .error { color: red; font-weight: bold; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Result Merger</h1>
-    <p>Upload your <b>CA Scores</b> and <b>Exam Scores</b> Excel files (<code>.xlsx</code>), and merge them by Registration Number.</p>
-    <small class="hint">Flexible headers supported: <i>Reg No., Matric No., Student ID, CA, Test, Continuous, Exam, Final</i>.</small>
-
+    <h2>Merge CA & Exam Scores</h2>
     <form id="mergeForm">
-      <label>CA Scores Excel File:</label><br />
-      <input type="file" id="caScoresFile" accept=".xlsx" required /><br />
-      <label>Exam Scores Excel File:</label><br />
-      <input type="file" id="examScoresFile" accept=".xlsx" required /><br />
-      <button type="submit">Merge &amp; Download</button>
+      <p><strong>Upload CA Scores Excel:</strong></p>
+      <input type="file" id="caScoresFile" accept=".xlsx,.xls" required>
+      <p><strong>Upload Exam Scores Excel:</strong></p>
+      <input type="file" id="examScoresFile" accept=".xlsx,.xls" required>
+      <br><br>
+      <button type="submit" class="btn">Merge Files</button>
     </form>
 
-    <div class="result" id="result"></div>
-    <a id="downloadLink" style="display:none;" download="merged_scores_complete.xlsx">Download Merged File</a>
+    <div id="result"></div>
+    <a id="downloadLink" style="display:none;" download="merged_scores_complete.xlsx"></a>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script>
-    // Read Excel file (first sheet only)
-    function readExcelFile(file) {
+    async function readExcelFile(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -50,122 +41,23 @@
             const workbook = XLSX.read(data, { type: "array" });
             const sheetName = workbook.SheetNames[0];
             const sheet = workbook.Sheets[sheetName];
-            const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: true });
+            const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
             resolve(rows);
-          } catch (err) {
-            reject(err);
-          }
+          } catch (err) { reject(err); }
         };
         reader.onerror = reject;
         reader.readAsArrayBuffer(file);
       });
     }
 
-    // Normalize header names (robust to variations)
-    function normalizeHeaders(headers) {
-      return headers.map((h) => {
-        if (!h) return "";
-        const raw = h.toString().trim();
-        const header = raw.toLowerCase();
-
-        if (header.includes("reg") || header.includes("matric") || header.includes("student") || header.includes("id"))
-          return "Registration Number";
-        if (header === "ca" || header.includes("ca ") || header.includes(" c.a") || header.includes("continuous") || header.includes("test"))
-          return "CA Score";
-        if (header.includes("exam") || header.includes("final") || header.includes("paper"))
-          return "Exam Score";
-
-        return raw; // keep as-is if unrecognized
+    function toDataFrame(data, colNames) {
+      if (data.length < 2) return [];
+      return data.slice(1).map(row => {
+        return {
+          "Registration Number": row[0],
+          [colNames[1]]: row[1]
+        };
       });
-    }
-
-    // Convert 2D array → array of objects
-    function arrayToObjectArray(data) {
-      if (!data || data.length < 2) return [];
-      const headers = normalizeHeaders(data[0]);
-
-      return data
-        .slice(1)
-        .filter((row) => row && row.some((c) => c !== undefined && c !== null && String(c).trim() !== ""))
-        .map((row) => {
-          const obj = {};
-          headers.forEach((h, i) => {
-            if (!h) return;
-            obj[h] = row[i];
-          });
-
-          if (!("CA Score" in obj)) obj["CA Score"] = "";
-          if (!("Exam Score" in obj)) obj["Exam Score"] = "";
-
-          if (obj["Registration Number"] !== undefined && obj["Registration Number"] !== null) {
-            obj["Registration Number"] = String(obj["Registration Number"]).trim();
-          }
-
-          return obj;
-        })
-        .filter((row) => row["Registration Number"]);
-    }
-
-    // Convert to number if possible
-    function toNumberOrBlank(val) {
-      if (val === undefined || val === null || String(val).trim() === "") return "";
-      const n = Number(val);
-      return Number.isFinite(n) ? n : val;
-    }
-
-    // Merge CA + Exam and add Total Score
-    function outerMergeByRegistration(caArr, examArr) {
-      const allRegs = new Set([
-        ...caArr.map((r) => r["Registration Number"]),
-        ...examArr.map((r) => r["Registration Number"]),
-      ]);
-
-      const caMap = {};
-      caArr.forEach((r) => {
-        const reg = r["Registration Number"];
-        if (reg) caMap[reg] = toNumberOrBlank(r["CA Score"]);
-      });
-
-      const examMap = {};
-      examArr.forEach((r) => {
-        const reg = r["Registration Number"];
-        if (reg) examMap[reg] = toNumberOrBlank(r["Exam Score"]);
-      });
-
-      const merged = [];
-      allRegs.forEach((reg) => {
-        const ca = caMap[reg] !== undefined ? caMap[reg] : "";
-        const exam = examMap[reg] !== undefined ? examMap[reg] : "";
-        let total = "";
-
-        if (typeof ca === "number" && typeof exam === "number") {
-          total = ca + exam;
-        }
-
-        merged.push({
-          "Registration Number": reg,
-          "CA Score": ca,
-          "Exam Score": exam,
-          "Total Score": total
-        });
-      });
-
-      merged.sort((a, b) =>
-        (a["Registration Number"] || "").localeCompare(b["Registration Number"] || "")
-      );
-
-      return merged;
-    }
-
-    function renderTable(data) {
-      if (!data.length) return "";
-      const headers = Object.keys(data[0]);
-      let html = "<table><thead><tr>" + headers.map((h) => `<th>${h}</th>`).join("") + "</tr></thead><tbody>";
-      data.forEach((row) => {
-        html += "<tr>" + headers.map((h) => `<td>${row[h] ?? ""}</td>`).join("") + "</tr>";
-      });
-      html += "</tbody></table>";
-      return html;
     }
 
     document.getElementById("mergeForm").onsubmit = async (e) => {
@@ -174,47 +66,51 @@
       const examFile = document.getElementById("examScoresFile").files[0];
       const resultDiv = document.getElementById("result");
       const downloadLink = document.getElementById("downloadLink");
-      resultDiv.innerHTML = "";
-      downloadLink.style.display = "none";
 
       if (!caFile || !examFile) {
-        resultDiv.innerHTML = '<span class="error">Please select both files.</span>';
+        resultDiv.innerHTML = '<p class="error">Please upload both files.</p>';
         return;
       }
 
       try {
-        resultDiv.innerHTML = "Reading files...";
-        const [caRaw, examRaw] = await Promise.all([readExcelFile(caFile), readExcelFile(examFile)]);
-        const caArr = arrayToObjectArray(caRaw);
-        const examArr = arrayToObjectArray(examRaw);
+        const [caData, examData] = await Promise.all([
+          readExcelFile(caFile),
+          readExcelFile(examFile)
+        ]);
 
-        if (caArr.length === 0 && examArr.length === 0) {
-          resultDiv.innerHTML = '<span class="error">Both files are empty or not proper Excel files.</span>';
-          return;
-        }
+        const caDF = toDataFrame(caData, ["Registration Number", "CA Score"]);
+        const examDF = toDataFrame(examData, ["Registration Number", "Exam Score"]);
 
-        const merged = outerMergeByRegistration(caArr, examArr);
+        // Merge by Registration Number
+        const regSet = new Set([...caDF.map(r => r["Registration Number"]), ...examDF.map(r => r["Registration Number"])]);
+        const merged = Array.from(regSet).map(reg => {
+          const ca = caDF.find(r => r["Registration Number"] === reg)?.["CA Score"] || "";
+          const exam = examDF.find(r => r["Registration Number"] === reg)?.["Exam Score"] || "";
+          return { "Registration Number": reg, "CA Score": ca, "Exam Score": exam };
+        });
 
-        resultDiv.innerHTML =
-          '<span class="success">Successfully merged! Preview below:</span>' +
-          renderTable(merged.slice(0, 15)) +
-          (merged.length > 15 ? `<p>...and ${merged.length - 15} more rows.</p>` : "");
+        // Preview
+        resultDiv.innerHTML = '<p class="success">Merge complete! Preview below:</p>';
+        let html = "<table><thead><tr><th>Registration Number</th><th>CA Score</th><th>Exam Score</th></tr></thead><tbody>";
+        merged.slice(0, 15).forEach(row => {
+          html += `<tr><td>${row["Registration Number"]}</td><td>${row["CA Score"]}</td><td>${row["Exam Score"]}</td></tr>`;
+        });
+        html += "</tbody></table>";
+        if (merged.length > 15) html += `<p>...and ${merged.length - 15} more rows.</p>`;
+        resultDiv.innerHTML += html;
 
-        // Export with consistent headers
-        const headers = ["Registration Number", "CA Score", "Exam Score", "Total Score"];
-        const ws = XLSX.utils.json_to_sheet(merged, { header: headers });
+        // Export merged file
+        const ws = XLSX.utils.json_to_sheet(merged);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Merged");
         const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-        const blob = new Blob([wbout], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        });
+        const blob = new Blob([wbout], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
         const url = URL.createObjectURL(blob);
         downloadLink.href = url;
-        downloadLink.style.display = "";
+        downloadLink.style.display = "inline-block";
         downloadLink.textContent = "Download merged_scores_complete.xlsx";
       } catch (err) {
-        resultDiv.innerHTML = `<span class="error">Error: ${err.message || err}</span>`;
+        resultDiv.innerHTML = `<p class="error">Error: ${err.message}</p>`;
       }
     };
   </script>
