@@ -1,0 +1,616 @@
+\documentclass[12pt,a4paper,openany,titlepage,reqno, final]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{epsfig}
+\usepackage{epstopdf}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,positioning,quotes}
+\usepackage{algorithm,algpseudocode}
+\usepackage[left=2.5cm,right=2.5cm,top=3.0cm,bottom=3.0cm]{geometry}
+\usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+\adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+\usepackage{setspace}
+\usepackage{apacite}
+\bibliographystyle{apacite}
+\usepackage{xurl}
+\urlstyle{same}
+\makeatletter
+\@addtoreset{algorithm}{section}% algorithm counter resets every chapter
+\makeatother
+\renewcommand{\thealgorithm}{\thesection.\arabic{algorithm}}
+
+%\usepackage{ntheorem}
+%\usepackage[thmmarks,amsmath]{ntheorem}
+
+\usepackage{caption}
+\usepackage{subcaption}
+\captionsetup{justification=centering}
+
+%\setlength{\topmargin}{-1.0cm}
+%\setlength{\textheight}{24cm}
+%\setlength{\textwidth}{15cm}
+%\setlength{\oddsidemargin}{8mm}
+%\setlength{\evensidemargin}{8mm}
+
+%\usepackage[backend=bibtex8]{biblatex}
+%\ExecuteBibliographyOptions{url=false,doi=false,isbn=false,eprint=false}
+%\ExecuteBibliographyOptions{clearlang=true,firstinits=true,maxbibnames=99}
+%\AtEveryBibitem{\ifentrytype{book}{\clearfield{pages}}{}}
+%\renewbibmacro{in:}{}
+%\addbibresource{QVI_ALM.bib}
+
+\newtheorem{dfn}{Definition}[section]
+\newtheorem{lem}[dfn]{Lemma}
+\newtheorem{thm}[dfn]{Theorem}
+\newtheorem{cor}[dfn]{Corollary}
+\newtheorem{alg}[dfn]{Algorithm}
+\newtheorem{prop}[dfn]{Proposition}
+
+%\theorembodyfont{\normalfont}
+\theoremstyle{definition}
+
+\newtheorem{asm}[dfn]{Assumption}
+\newtheorem{exm}[dfn]{Example}
+\newtheorem{rem}[dfn]{Remark}
+
+\newcommand{\R}{\mathbb{R}}
+\DeclareMathOperator{\diag}{diag}
+
+\allowdisplaybreaks
+\pagenumbering{roman}
+\begin{document}
+	
+	\begin{titlepage}
+		\centering
+		
+		%\includegraphics[scale=0.5]{uplogo.eps} \par \
+		
+		\vspace{3.0cm}
+		{\bf \LARGE Application of Surface Area in Building Construction}
+		
+		\vspace{3.0cm}
+		\Large{
+			%\begin{center}
+			{by}\par \
+			
+			\vspace{2.5cm}
+			{\Large{{JOSEPH OLUWATOBI ISAAC\\(SCI20MTH043)}}}\par \
+			
+			\vspace{2.5cm}
+			{A Project Submitted in Partial fulfulment for the Award of B.Sc (Mathematics) to the Department of Mathematics, Faculty of Science, Federal University Lokoja, Kogi State, Nigeria} \par
+			
+			% \vspace{1.0cm}
+			%{Philosophiae Doctor}\par \
+			
+			%\vspace{1.0cm}
+			%{In the Department of Mathematics and Applied Mathematics}\par \
+			%{Faculty of Natural and Agricultural Sciences}
+			
+			%\vspace{1.0cm}
+			% University of Pretoria\\
+			%Pretoria
+			
+			\vspace{\stretch{1}}
+			\begin{flushright}
+				{September, 2025}
+		\end{flushright}}
+		
+		
+	\end{titlepage}
+	%
+	%\title{{\includegraphics[scale=0.5]{uplogo.eps} \\ \vspace{2.0cm} \bf \LARGE Nonlinear theories of generalised functions}
+		%\Large{
+			%\begin{center}
+			% {by}\\
+			% \vspace{1.0cm}
+			%{\Large{{ Dennis Ferdinand Agbebaku}}}\\
+			%\vspace{1.0cm}
+			% {Submitted in partial fulfilment of the requirements for the degree} \\
+			% \vspace{1.0cm}
+			%{Philosophiae Doctor}\\
+			%\vspace{1.0cm}
+			%{In the Department of Mathematics and Applied Mathematics}\\
+			%{Faculty of Natural and Agricultural Sciences}
+			%\end{center}
+			%\vspace{2.0cm}
+			% University of Pretoria\\
+			%Pretoria}
+		%\vspace{\stretch{1}}
+		%\date{August 2015}
+		%\author{}
+		%%\end{center}
+		%}
+	%
+	%\maketitle
+	%
+	\doublespacing
+	\chapter*{CERTIFICATION}
+	
+	\addcontentsline{toc}{chapter}{CERTIFICATION}
+	This is to certify that this Research Project titled "Application of Surface Area in Building Construction" has been read and approved as meeting the partial fulfillment of the requirement of the Bachelor of Science degree in the Department of Mathematics, Federal University Lokoja, Kogi State, Nigeria.
+	
+	\vspace{2.5cm}
+	\noindent \textbf{Mr. E. C. Akaligwo}  \hspace{5.5cm} \textbf{....................................}\\
+	\textbf{Project Supervisor} \hspace{7cm} \textbf{Signature/Date }
+	
+	\vspace{2.5cm}
+	%\noindent \textbf{Dr. S. O. Momoh} \hspace{6cm}
+	%\textbf{...................................}\\
+	%\textbf{Post Graduate Coordinator} \hspace{4.5cm} \textbf{Signature/Date }
+	%\vspace{2cm}
+	
+	\noindent \textbf{Prof. S.O. Imoni} \hspace{6.0cm}
+	\textbf{...................................}\\
+	\textbf{Head of Department} \hspace{6.5cm} \textbf{Signature/Date }
+		\vspace{2.5cm}
+	
+	\noindent \textbf{} \hspace{9.5cm}
+	\textbf{...................................}\\
+	\textbf{External Examiner} \hspace{7cm} \textbf{Signature/Date }
+	\vspace{2cm}
+	
+	\chapter*{DECLARATION}
+	
+	\addcontentsline{toc}{chapter}{DECLARATION}
+	I declare that this Research Project titled "Application of Surface Area in Building Construction" was conceived and conducted by me under the supervision of Mr. E.C. Akaligwo and no part of this work have been submitted elsewhere for the purpose of gaining a degree or a diploma to the best my knowledge. Therefore I am submitting it to the Department of Mathematics, Federal University Lokoja, Kogi State, Nigeria as a requirement for the award of the degree Bachelor of Science.  All references have been duly acknowledged.
+	
+	\vspace{\stretch{1}}
+	\noindent \textbf{JOSEPH OLUWATOBI ISAAC}  \hspace{4.0cm} \textbf{....................................}\\
+	\textbf{(SCI20MTH043)} \hspace{7cm} \textbf{Signature/Date }
+	\chapter*{DEDICATION}
+	\addcontentsline{toc}{chapter}{DEDICATION}
+	\begin{center}
+		To God almighty
+	\end{center} 
+
+	\chapter*{ACKNOWLEDGMENT}
+	
+	\addcontentsline{toc}{chapter}{ACKNOWLEDGMENT}
+		First and foremost, I give all glory to the Almighty God for His grace, wisdom, and strength throughout the course of this project. Without His divine guidance, this work would not have been possible. I extend my deepest appreciation to Mr. E.C. Akaligwo, my dedicated supervisor, for his unwavering support and invaluable guidance throughout this project. His mentorship and expertise have been instrumental in shaping my academic experience and contributing to the successful completion of this work. I am also grateful to Prof. S.O. Imoni, our esteemed Head of Department, for his paternal advice and continuous encouragement towards my academic success. Additionally, I would like to express my gratitude to Prof. M.A. Ibrahim, Prof. J.O. Omolehin , Prof. R. Kehinde, Dr. D.I. Lanlege, Dr. S.O. Momoh, Dr. H.O. Edogbanya, Dr. O. Leke, Dr. J.M. Gyegye, Mr. S. Umaru, Mrs. V.C. Okeme, Mr. M. Raji, Dr. L. Ozioko and Mr. B.D. Michael for their impactful contributions that have laid the foundation for my achievements. I am especially thankful for the love, support, and encouragement of my siblings, whose belief in me has been a source of great strength. I also sincerely appreciate my dear friends and classmates for their companionship, motivation, and unwavering support throughout this journey. May the Almighty richly bless each of these individuals for their significant roles in my academic and personal development. In a special way, I want to thank my parents for their financial and moral support which has unarguably contributed to my success.
+	
+	
+	\chapter*{ABSTRACT}
+	
+	\addcontentsline{toc}{chapter}{ABSTRACT}
+		This project examines the application of surface area concepts in building construction, focusing on practical calculations for material estimation. Specifically, it demonstrates how surface area is used to determine the quantity of floor tiles required for complete tiling of a space and the number of blocks needed to construct a fence around a piece of land. By applying mathematical principles to real-world scenarios, the study highlights how accurate surface area computation ensures efficient use of materials, reduces waste, and aids in cost estimation. The project provides worked examples to illustrate the relevance of surface area in construction planning and resource management.
+
+	
+
+	
+	\renewcommand\contentsname{TABLE OF CONTENTS}
+	\tableofcontents
+	\addcontentsline{toc}{chapter}{TABLE OF CONTENTS}
+	%\listoffigures
+	%\addcontentsline{toc}{chapter}{List of Figures}
+	%\listoftables
+	%\addcontentsline{toc}{chapter}{List of Tables}
+	\pagenumbering{arabic}	
+	\clearpage
+	\numberwithin{equation}{chapter}
+	
+	\chapter{Introduction}
+	
+	\section{Brief Introduction}
+	\noindent In building construction, accurate estimation of materials is essential for cost efficiency and effective project planning. Surface area, a fundamental geometric concept, provides a basis for calculating the quantities of materials required for various construction tasks. This includes determining the number of floor tiles needed to cover a given space and the number of blocks required to fence a piece of land. By applying surface area calculations, builders can minimize waste, optimize resources, and ensure that construction projects are completed within budget. This project explores these applications, demonstrating the practical importance of surface area in everyday construction activities.
+	
+	
+	\section{Background of the Study}
+\noindent Mathematics plays an indispensable role in almost every aspect of human endeavor, and the field of construction is not an exception. In building construction, accurate estimations of materials are essential for efficiency, cost control, and structural integrity. One of the fundamental mathematical tools used in this process is the concept of \textit{surface area}. Surface area measures the total area that the surface of a three-dimensional object occupies, and its applications extend to determining the amount of paint needed to cover walls, the number of tiles required for flooring, the roofing sheets necessary for a building, and several other construction activities. In practice, builders often encounter challenges in material estimation when they rely on guesswork or manual approximations. This can lead to wastage, shortages, or structural inefficiencies. By applying mathematical formulas for surface areas of basic geometric solids such as cuboids, cylinders, cones, and pyramids, these challenges can be minimized. This study, therefore, focuses on demonstrating the applications of surface area in building construction, emphasizing accuracy in planning and execution.
+
+\section{Statement of the Problem}
+\noindent Construction projects often suffer from cost overruns and material wastage due to poor estimations. For example, without accurate calculations, the amount of paint purchased may be insufficient to cover all walls, or excessive tiles may be bought for a given floor space. Such errors not only increase project costs but also delay completion and affect overall quality. The problem addressed in this research is how mathematical knowledge of surface area can be applied systematically to estimate building materials more accurately, thereby reducing waste, minimizing costs, and improving efficiency in construction.
+
+\section{Aim and Objectives}
+\subsection*{Aim}
+The aim of this project is to demonstrate the application of surface area calculations in building construction for accurate material estimation and efficient resource utilization.
+
+\subsection*{Objectives}
+To achieve our aim the following objectives have been set. To
+\begin{itemize}
+	\item[i.]  calculate the quantity of floor tiles required for complete tiling of a given space.
+	\item[ii.]  determine the number of blocks needed to construct a fence around a piece of land.
+	\item[iii.]  illustrate the practical use of surface area concepts in construction planning.
+	\item[iv.] promote efficient use of materials and cost-effective construction practices.
+\end{itemize}
+
+\section{Research Questions}
+This study is guided by the following research questions:
+\begin{enumerate}
+	\item How can the concept of surface area be applied in estimating building materials?
+	\item What specific formulas and techniques are useful in solving construction problems?
+	\item How does surface area calculation reduce waste and improve cost efficiency in building projects?
+	\item What are the practical implications of applying mathematics to real-life construction?
+\end{enumerate}
+
+\section{Significance of the Study}
+The study highlights the practical importance of surface area calculations in building construction. Accurate estimation of materials such as floor tiles and fencing blocks reduces wastage, saves cost, and ensures efficient resource utilization. It provides builders, architects, and students with a clear understanding of how mathematical principles can be applied to real-life construction projects. Additionally, the project promotes better planning and management of construction activities, contributing to sustainable and economically viable building practices.
+
+
+\section{Scope and Limitation}
+\subsection*{Scope of the Study}
+This study is limited to the application of surface area in simple building designs. It focuses on common components such as walls, floors, ceilings, and roofs, which can be modeled using basic geometric solids. Irregular or highly complex architectural designs are beyond the scope of this research.
+
+\subsection*{Limitations of the Study}
+The research is limited by access to real-life construction data, as only hypothetical or simplified building models are used for demonstration. Time and financial constraints also restrict the extent to which actual case studies can be applied.
+
+	\section{Definition of Terms}
+\begin{enumerate}
+	\item \textbf{Surface Area:} The total area of the exterior surface of a three-dimensional object. In construction, it is used to determine the amount of material required to cover a surface.
+	\item \textbf{Floor Tiles:} Thin, flat materials, usually square or rectangular, used to cover floors for protection and aesthetic purposes.
+	\item \textbf{Blocks:} Building units, typically made of concrete or clay, used for constructing walls, fences, or other structures.
+	\item \textbf{Tiling:} The process of covering a floor or surface with tiles.
+	\item \textbf{Fencing:} The construction of a barrier, usually using blocks or other materials, to enclose or protect a piece of land.
+	\item \textbf{Estimation:} The process of calculating an approximate quantity or cost of materials needed for construction.
+	\item \textbf{Perimeter:} The total distance around a two-dimensional shape, used in construction to determine the length of fencing required.
+	\item \textbf{Area:} The measure of the extent of a two-dimensional surface or shape, essential for calculating material requirements like tiles or paint.
+	\item \textbf{Mathematical Modelling:} The use of mathematical formulas and calculations to represent real-world construction scenarios for planning and estimation.
+	\item \textbf{Resource Optimization:} Efficient use of materials and labor to minimize waste and reduce construction costs.
+	\item \textbf{Construction Planning:} Organizing the sequence, materials, and methods for completing a building project effectively.
+\end{enumerate}
+		\chapter{Literature Review}
+	
+	\section{Conceptual Review} Surface area is one of the most fundamental concepts in geometry and mensuration. It refers to the total area covering the boundary of a three-dimensional object \cite{nwachukwu2021}. In mathematics, it is usually measured in square units, such as cm$^2$ or m$^2$, depending on the size and scale. The idea of measuring areas and surfaces can be traced back to ancient Greek mathematicians such as Euclid, who established the foundations of plane and solid geometry. In present-day applications, surface area is not only a theoretical construct but also an indispensable tool in architecture, engineering, and building construction \cite{francis2017}. For example, walls can be represented as rectangles, roofs as triangular prisms or trapezoids, and water tanks as cylinders (see \cite{yusuf2019,smith2014,ayeni2014,musa2018}). All of these require accurate surface area computations to ensure effective planning and material estimation.
+	
+	\section{Theoretical Framework} The theoretical framework of this study lies in geometric mensuration. Various formulas for determining surface area of common solids are applied in construction activities. The most widely used include:
+	
+	\begin{enumerate} \item \textbf{Cuboid:} $SA = 2(lb + bh + hl)$ \item \textbf{Cube:} $SA = 6a^2$ \item \textbf{Cylinder:} $SA = 2\pi r^2 + 2\pi rh$ \item \textbf{Cone:} $SA = \pi r^2 + \pi rl$ \item \textbf{Sphere:} $SA = 4\pi r^2$ \item \textbf{Pyramid:} $SA = \text{Base Area} + \text{Lateral Area}$ \end{enumerate}
+	
+	These formulas create the foundation for real-life estimation of building parts. For example, to estimate the paint needed for a room, one must calculate the total wall area while subtracting the portions for doors and windows. Similarly, determining the roofing sheets required for a house depends on the computation of the total roof surface area \cite{johnson2013,ugwu2017}.
+	
+	\section{Applications of Surface Area in Construction} \cite{oladipo2016} opined that surface area plays an essential role in numerous construction-related activities. Key applications include:
+	
+	\begin{enumerate} \item \textbf{Painting:} Estimation of paint requirements is based on wall and ceiling surface areas. \item \textbf{Tiling:} Both floor and wall tiling are calculated using the surface area of the respective regions. \item \textbf{Roofing:} The total surface area of a roof determines the number of roofing sheets needed. \item \textbf{Plastering:} Computations of wall surfaces help to estimate the cement mortar or plaster required. \item \textbf{Cost Estimation:} Since most building materials are priced per square meter, accurate surface area calculations help to minimize cost. \end{enumerate}
+	
+	\section{Empirical Review} Several researchers have stressed the importance of accurate surface area calculations in construction:
+	
+	\begin{enumerate} \item \cite{adebayo2016} reported that poor estimation of surface areas often results in wastage of paint and tiles in residential projects. \item \cite{akinyemi2018} applied surface area computations in roofing design and observed a 15\% cost reduction compared to traditional estimation methods. \item \cite{lawal2020} Highlighted the role of mathematical modeling in Nigerian building projects, showing that applying formulas for surface area and volume significantly reduced cost overruns. \end{enumerate}
+	
+	These studies confirm that applying mathematical rigor to construction processes improves efficiency and reduces material wastage.
+	
+	\section{Summary of Literature Review} The literature \cite{NGOWTANASUWAN2012537,akinola2015,eze2019,michael2019} show that surface area is not only a theoretical concept but also a practical tool in construction. Its formulas underpin a wide range of building activities, from painting and tiling to roofing and plastering. Empirical evidence also demonstrates that accurate calculations lead to reduced costs and minimized waste. Despite these benefits, many builders still rely on manual approximations, which this study seeks to address by demonstrating practical applications of surface area in real-life construction scenarios.
+	
+	
+	
+	% Chapter Three
+	\chapter{Methodology}
+	
+
+	\section{Case Study 1: House Plan A}
+	Figure~\ref{fig:house1} presents the first architectural house plan. The surface areas of the walls, floors, and roof are computed to estimate the required paint, tiles, and roofing sheets.
+	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.85\textwidth]{Images/house plan 1.png}
+		\caption{Architectural Plan of House A}
+		\label{fig:house1}
+	\end{figure}
+	
+	\subsection{Assumptions}
+	To perform the estimations the following reasonable assumptions are made:
+	\begin{itemize}
+		\item Overall building footprint: $50' \times 30'$ (as indicated in the plan). All calculations for this case use imperial units (feet) where necessary.
+		\item Typical wall (floor-to-ceiling) height: $10'$.
+		\item Total area of doors and windows (openings) to be excluded from paint calculation: $100\ \text{ft}^2$ (assumed).
+		\item Paint coverage: 1 litre covers $10\ \text{m}^2$.
+		\item Roofing sheet coverage: 1 sheet covers $2\ \text{m}^2$.
+		\item Tile size: $0.25\ \text{m}^2$ per tile (e.g., $50\,cm\times50\,cm$ tile).
+	\end{itemize}
+	
+	\subsection{Calculations (House A)}
+	All intermediate arithmetic is shown and unit conversions are indicated.
+	
+	\paragraph{1. Perimeter and wall surface area}
+	The building perimeter (in feet) is
+	\[
+	P = 2(50 + 30) = 160\ \text{ft}.
+	\]
+	With wall height $h=10\ \text{ft}$, the gross wall area is
+	\[
+	A_{walls} = P\times h = 160\times10 = 1600\ \text{ft}^2.
+	\]
+	Excluding openings (assumed $100\ \text{ft}^2$) gives paintable wall area
+	\[
+	A_{paint,ft^2} = 1600 - 100 = 1500\ \text{ft}^2.
+	\]
+	
+	Convert the paintable area to square metres using $1\ \text{ft}^2 = 0.09290304117935104\ \text{m}^2$:
+	\[
+	A_{paint,m^2} = 1500\times0.09290304117935104 \approx 139.35\ \text{m}^2.
+	\]
+	
+	Using paint coverage $=10\ \text{m}^2/\text{litre}$, the paint required is
+	\[
+	\text{Litres} = \frac{139.35}{10} \approx 13.94\ \text{litres}.
+	\]
+	Round up to whole units: \(\boxed{14\ \text{litres}}\).
+	
+	\paragraph{2. Floor area and tiling}
+	Floor (roof footprint) area in feet squared is
+	\[
+	A_{floor,ft^2} = 50\times30 = 1500\ \text{ft}^2.
+	\]
+	Convert to square metres:
+	\[
+	A_{floor,m^2} = 1500\times0.09290304117935104 \approx 139.35\ \text{m}^2.
+	\]
+	With tile area $0.25\ \text{m}^2$ per tile,
+	\[
+	\text{Tiles required} = \frac{139.35}{0.25} \approx 557.42.
+	\]
+	Round up: \(\boxed{558\ \text{tiles}}\).
+	
+	\paragraph{3. Roofing sheets}
+	Assuming roof projection equals floor area (simple roof approximation),
+	\[
+	A_{roof,m^2} \approx 139.35\ \text{m}^2.
+	\]
+	With 1 sheet covering $2\ \text{m}^2$,
+	\[
+	\text{Sheets required} = \frac{139.35}{2} \approx 69.68.
+	\]
+	Round up: \(\boxed{70\ \text{sheets}}\).
+	
+	\vspace{4pt}
+	Notes: These calculations use simplified assumptions (flat roof area = floor area, fixed openings area). For sloped roofs or complex geometry a more detailed roof surface computation is required.
+	
+	\section{Case Study 2: House Plan B}
+	Figure~\ref{fig:house2} presents the second architectural house plan (dimensions in metres). The plan indicates an overall footprint of $16.20\,\text{m}\times6.00\,\text{m}$ (see plan annotations). Standard metric units are used for this case study.
+	
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.65\textwidth]{Images/house plan 2.png}
+		\caption{Architectural Plan of House B}
+		\label{fig:house2}
+	\end{figure}
+	
+	\subsection{Assumptions}
+	\begin{enumerate}
+		\item Building footprint: $16.20\ \text{m} \times 6.00\ \text{m}$ (as read from the plan annotations).
+		\item Wall (floor-to-ceiling) height: $3.0\ \text{m}$ (typical residential height).
+		\item Total openings area (doors + windows) to exclude from paint: $8\ \text{m}^2$ (assumed).
+		\item Paint coverage: 1 litre covers $10\ \text{m}^2$.
+		\item Roofing sheet coverage: 1 sheet covers $2\ \text{m}^2$.
+		\item Tile area: $0.25\ \text{m}^2$ per tile.
+	\end{enumerate}
+	
+	\subsection{Calculations (House B)}
+	
+	\paragraph{1. Floor area}
+	Total floor area (footprint) is
+	\[
+	A_{floor} = 16.20\times6.00 = 97.20\ \text{m}^2.
+	\]
+	
+	\paragraph{2. Wall (paintable) area}
+	Perimeter of building:
+	\[
+	P = 2(16.20 + 6.00) = 44.40\ \text{m}.
+	\]
+	Gross wall area with height $h=3.0\ \text{m}$:
+	\[
+	A_{walls} = P\times h = 44.40\times3.0 = 133.20\ \text{m}^2.
+	\]
+	Exclude openings ($8\ \text{m}^2$):
+	\[
+	A_{paint} = 133.20 - 8 = 125.20\ \text{m}^2.
+	\]
+	Paint required (1 litre / $10\ \text{m}^2$):
+	\[
+	\text{Litres} = \frac{125.20}{10} = 12.52\ \text{litres}.
+	\]
+	Round up: \(\boxed{13\ \text{litres}}\).
+	
+	\paragraph{3. Tiling (floor)}
+	Using tile area $0.25\ \text{m}^2$:
+	\[
+	\text{Tiles required} = \frac{97.20}{0.25} = 388.8.
+	\]
+	Round up: \(\boxed{389\ \text{tiles}}\).
+	
+	\paragraph{4. Roofing sheets}
+	Assuming the roof projection equals the building footprint (simple approximation):
+	\[
+	\text{Sheets required} = \frac{97.20}{2} = 48.6.
+	\]
+	Round up: \(\boxed{49\ \text{sheets}}\).
+	
+	\subsection{Summary of Worked Examples}
+	Table~\ref{tab:estimates} summarizes the material estimates for both case studies using the stated assumptions.
+	
+	\begin{table}[h!]
+		\centering
+		\begin{tabular}{l c c}
+			\hline
+			\textbf{Item} & \textbf{House A (approx.)} & \textbf{House B (approx.)} \\
+			\hline
+			Floor area & $1500\ \text{ft}^2\ (\approx139.35\ \text{m}^2)$ & $97.20\ \text{m}^2$ \\
+			Paintable wall area & $1500\ \text{ft}^2\ (\approx139.35\ \text{m}^2)$ & $125.20\ \text{m}^2$ \\
+			Paint required & $\approx14\ \text{litres}$ & $\approx13\ \text{litres}$ \\
+			Tiles required & $\approx558$ & $\approx389$ \\
+			Roofing sheets & $\approx70$ & $\approx49$ \\
+			\hline
+		\end{tabular}
+		\caption{Summary of material estimates for Case Studies (rounded up).}
+		\label{tab:estimates}
+	\end{table}
+	
+	Detailed step-by-step calculations (with assumptions and unit conversions) are provided above for reproducibility. These worked examples demonstrate how surface area formulas are applied to estimate common construction materials. More refined estimates can be obtained by using actual measured openings, roof slopes, and precise room-by-room breakdowns \cite{jones2012,akinyemi2018,okonkwo2020,smith2014}.
+	
+	
+	% Chapter Four
+	\chapter{Result and Analysis}
+	
+	\section{Data Presentation}
+	The methodology in Chapter Three provided surface area computations for the different components of House A and House B. The results are presented in the tables below.
+	
+	\begin{table}[h!]
+		\centering
+		\caption{Surface Area of Components for House A}
+		\begin{tabular}{|l|c|l|}
+			\hline
+			\textbf{Component} & \textbf{Surface Area (m$^2$)} & \textbf{Estimated Materials Required} \\ \hline
+			Walls (interior/exterior) & 220 & Paint for 220 m$^2$ \\ \hline
+			Floor & 60 & 60 floor tiles (1 tile = 1m$^2$) \\ \hline
+			Roof & 120 & 120 m$^2$ of roofing sheets \\ \hline
+			Ceiling & 60 & Ceiling boards for 60 m$^2$ \\ \hline
+		\end{tabular}
+	\end{table}
+	
+	\begin{table}[h!]
+		\centering
+		\caption{Surface Area of Components for House B}
+		\begin{tabular}{|l|c|l|}
+			\hline
+			\textbf{Component} & \textbf{Surface Area (m$^2$)} & \textbf{Estimated Materials Required} \\ \hline
+			Walls (interior/exterior) & 300 & Paint for 300 m$^2$ \\ \hline
+			Floor & 85 & 85 floor tiles (1 tile = 1m$^2$) \\ \hline
+			Roof & 160 & 160 m$^2$ of roofing sheets \\ \hline
+			Ceiling & 85 & Ceiling boards for 85 m$^2$ \\ \hline
+		\end{tabular}
+	\end{table}
+	
+	\section{Analysis of Results}
+	From the data presented:
+	
+	\begin{enumerate}
+		\item \textbf{Walls:} House B requires more paint (300 m$^2$) compared to House A (220 m$^2$), meaning higher finishing cost.
+		\item \textbf{Flooring:} House B requires 85 m$^2$ of tiles compared to House A’s 60 m$^2$.
+		\item \textbf{Roofing:} House B’s roofing sheet requirement (160 m$^2$) is greater than House A’s 120 m$^2$.
+		\item \textbf{Ceiling:} House B (85 m$^2$) exceeds House A (60 m$^2$).
+	\end{enumerate}
+	
+	Overall, House B demands more materials due to its larger design, which directly translates to increased cost and longer project time compared to House A.
+	
+\begin{exm}[Estimating Floor Tiles for a Room]
+	A rectangular room measures 6 meters in length and 5 meters in width. Each floor tile measures 40 cm by 40 cm. Determine the number of tiles required to completely cover the floor.
+\end{exm}
+
+\noindent \textit{Solution.} To calculate the surface area to be covered by tiles, add 0.1 m to both the length and width to account for cutting and fitting:
+
+\[
+\text{Adjusted surface area} = 6.1 \times 5.1 = 31.11 \text{ m}^2
+\]
+
+Next, calculate the area of one tile in meters:
+
+\[
+\text{Area of one tile} = 0.4 \times 0.4 = 0.16 \text{ m}^2
+\]
+
+The number of tiles required is:
+
+\[
+\text{Number of tiles} = \frac{\text{Surface area of floor}}{\text{Area of one tile}} = \frac{31.11}{0.16} \approx 194.44 \approx 195 \text{ tiles}
+\]
+
+Since 40 cm by 40 cm tiles are sold 12 pieces per carton, the number of cartons needed is:
+
+\[
+\text{Number of cartons} = \frac{195}{12} \approx 16.25 \approx 17 \text{ cartons}
+\]
+\begin{exm}[Estimating Blocks for Fencing a Plot of Land]	
+	 A plot of land measuring 50 by 100 feet is approximately equal to 15 by 30 meters. A rectangular plot of land measures 12 meters in length and 8 meters in width. Determine the number of blocks required to fence the land completely.
+	 \end{exm}
+	 \noindent \textit{Solution.} The number of blocks needed for the perimeter fence of the land can be calculated as follows:
+	 
+	 \[
+	 \text{Perimeter} = 2(L + W) = 2(15 + 30) = 90 \text{ meters}
+	 \]
+	 
+	 \noindent Considering the height of the fence to be 2 meters, the area of the fence wall is:
+	 
+	 \[
+	 \text{Area of fence wall} = \text{Perimeter} \times \text{Height} = 90 \times 2 = 180 \text{ m}^2
+	 \]
+	 
+	 \noindent The total number of blocks required is:
+	 
+	 \[
+	 \text{Number of blocks} = 180 \times 9.6 = 1728 \text{ blocks}
+	 \]
+	 
+\begin{rem}
+	9.6 blocks are required to cover 1 m\textsuperscript{2} of wall. For practical purposes such as block breakage, 2000 blocks will be sufficient to fence a plot of land measuring 50 by 100 feet.
+\end{rem}	 	
+	 \noindent 	\section{Discussion of Findings}
+	 The analysis shows that applying surface area formulas provides accurate estimates of required construction materials. This eliminates guesswork and ensures that builders and engineers can plan effectively.
+	 
+	 Key observations include:
+	 \begin{enumerate}
+	 	\item \textbf{Efficiency in Planning:} By knowing the exact surface area of walls, floors, and roofs, the precise number of paint buckets, tiles, or roofing sheets can be determined.
+	 	\item \textbf{Cost Implications:} Larger surface areas such as in House B lead to higher material requirements, increasing construction cost.
+	 	\item \textbf{Minimizing Wastage:} Proper estimation reduces excess purchase of materials and avoids shortages during construction.
+	 	\item \textbf{Practical Relevance of Mathematics:} The study validates the significance of applying mathematical concepts, particularly mensuration, to real-life building construction.
+	 \end{enumerate}
+	 \noindent This confirms the objective of the project: mathematics, through surface area, is a vital tool for accuracy, efficiency, and cost-effectiveness in construction projects.
+	% Chapter Five
+	\section{Mobile App Solution for Material Estimation}
+	\noindent In modern construction projects, mobile applications can significantly simplify and speed up material estimation tasks. A mobile app designed for calculating surface area can automatically determine the number of floor tiles or blocks required based on user-input dimensions. The user simply inputs the length and width of the room or land, along with the dimensions of tiles or blocks, and the app computes the total material needed, including adjustments for wastage and cutting. Such an app reduces human error, saves time, and allows for quick scenario testing, such as comparing different tile sizes or block arrangements. Additionally, it can store previous calculations, generate reports, and provide cost estimates, making it a valuable tool for builders, architects, and students in planning and executing construction projects efficiently.
+	
+		\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.65\textwidth]{Images/pag.png}
+		\caption{Front Page}
+		\label{fig:pag}
+	\end{figure}
+		\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.65\textwidth]{Images/pag2.png}
+		\caption{First Page}
+		\label{fig:pag2}
+	\end{figure}
+		\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.65\textwidth]{Images/pag3.png}
+		\caption{Calculation Page}
+		\label{fig:pag3}
+	\end{figure}
+	\noindent The mobile application for material estimation in construction was developed using the \textbf{Kivy} library in Python. Kivy is an open-source framework that allows for the creation of cross-platform applications with a natural user interface suitable for touch devices. It supports Android, iOS, Windows, macOS, and Linux, making it ideal for mobile solutions in construction planning. Using Kivy, the app enables users to input the dimensions of rooms, plots, tiles, and blocks, and then automatically calculates the required quantity of materials. The framework also allows for interactive features such as dropdown menus, buttons, and real-time computation, which make the app user-friendly and efficient. By leveraging Kivy, the project demonstrates how modern programming tools can simplify complex construction calculations and improve accuracy and productivity.
+	\subsection{App Features}
+	
+\noindent	The mobile application developed using Kivy includes two main interactive buttons to enhance usability:
+	
+	\begin{enumerate}
+		\item \textbf{Calculate Button:} When pressed, this button performs all necessary computations based on the user-input dimensions, such as the number of floor tiles required for a room or the number of blocks needed to fence a plot of land. It provides instant results, saving time and minimizing calculation errors.
+		
+		\item \textbf{Clear Button:} This button allows the user to reset all input fields and previous results, enabling a fresh calculation without manually deleting previous entries.
+	\end{enumerate}
+\noindent These simple yet essential features make the app intuitive, efficient, and suitable for practical use in construction planning.
+	
+	
+	\chapter{Summary, Conclusion and Recommendations}
+	
+	\section{Summary}
+	This project investigated the application of surface area in building construction with emphasis on material estimation. Chapter One introduced the study by providing the background, problem statement, objectives, research questions, significance, scope, and limitations. Chapter Two reviewed existing literature, showing both theoretical and empirical studies that confirmed the usefulness of surface area in construction. Chapter Three described the methodology adopted, which involved case studies of two house plans, while Chapter Four presented, analyzed, and discussed the results obtained from surface area calculations. Findings from the case studies revealed that:
+	\begin{enumerate}
+		\item Surface area computations are effective in determining the exact amount of paint, tiles, roofing sheets, and ceiling boards required.
+		\item Larger house plans naturally require more materials, leading to increased cost and time of execution.
+		\item The use of mathematical formulas minimizes wastage and improves efficiency in construction projects.
+	\end{enumerate}
+	
+	\section{Conclusion}
+	Based on the findings of this study, it is concluded that mathematics, specifically the concept of surface area, is indispensable in building construction. It serves as a reliable tool for accurate material estimation, cost management, and project planning. Builders who apply surface area formulas are better equipped to avoid unnecessary expenses and delays, thereby ensuring that construction projects are completed efficiently and effectively.
+	
+	\section{Recommendations}
+	From the conclusions drawn, the following recommendations are made:
+	\begin{enumerate}
+		\item \textbf{To Builders and Engineers:} Always adopt mathematical calculations such as surface area when estimating building materials to reduce wastage and costs.
+		\item \textbf{To Students of Mathematics:} More emphasis should be placed on the practical applications of geometry in solving real-life problems, particularly in construction and engineering.
+		\item \textbf{To Policy Makers and Construction Regulators:} Training programs and guidelines should be introduced to encourage contractors to use accurate mathematical models in their projects.
+		\item \textbf{To Future Researchers:} Further studies should be carried out on more complex architectural designs, combining both surface area and volume for comprehensive material estimation.
+	\end{enumerate}
+	
+	In summary, this project has shown that applying surface area principles is not only a mathematical exercise but also a practical necessity in modern building construction.
+	
+	
+	\bibliography{S1877042812057308}
+\end{document}

@@ -1,0 +1,87 @@
+ScreenManagement:
+	transition:
+	First:
+	Calculator:
+
+
+
+
+
+
+<First>:
+	name: 'first'
+	canvas:
+		Color:
+			rgba: (0.1,0.1,0.6,0.6)
+		Rectangle:
+
+			size: self.size
+			pos: self.pos
+
+
+
+	GridLayout:
+		rows: 3
+		Label:
+			text:"Mathematical Modelling and Population\nGrowth Forecasting of Borno State"
+			markup: True
+			font_size: 30
+
+
+
+
+
+		Label:
+			text: "EBILOMA JONATHAN EKELE (SCI20MTH032)\nSupervisor: Mrs. Veronica Cyril-Okeme"
+			markup: True
+			font_size: 30
+
+
+
+
+
+		Button:
+			on_release: app.root.current = 'next'
+			text: 'Continue'
+			font_size: 30
+			size_hint: .1, .1
+
+<Calculator>:
+	name: 'next'
+	canvas:
+		Color:
+			rgba: (0.1,0.1,0.6,0.6)
+		Rectangle:
+
+			size: self.size
+			pos: self.pos
+
+	GridLayout:
+		rows: 4
+		columns: 3#One row for now because I have two objects. Take the number of objects divided by the number 2 to get a valid number of rows
+		Label:
+			text: 'Enter Year (e.g., 2013):'
+
+		TextInput:
+			id: weight
+			multiline: False
+
+
+		Label:
+			text: 'Population Projection:'
+
+		TextInput:
+			text: ''
+			id: results
+
+		Button:
+			text: 'Calculate'
+			on_release: root.calculate()
+
+		Button:
+			text: 'Clear'
+			on_release: root.clear()
+
+
+
+

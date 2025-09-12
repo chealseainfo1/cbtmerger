@@ -1,0 +1,88 @@
+#:import rgba kivy.utils.get_color_from_hex
+
+ScreenManagement:
+    First:
+    Calculator:
+
+<First>:
+    name: "first"
+    canvas.before:
+        Color:
+            rgba: 0.1,0.1,0.6,0.6   # blue background
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    BoxLayout:
+        orientation: "vertical"
+        spacing: 20
+        padding: 40
+        Label:
+            text: "Tile Quantity Calculator"
+            font_size: 24
+            color: 0.1,0.1,0.6,0.6
+        Label:
+            text: "Student: John Doe\\nSupervisor: Dr. Jane Smith"
+            font_size: 18
+            color: 0.1,0.1,0.6,0.6
+        Button:
+            text: "Start"
+            size_hint_y: None
+            height: 60
+            on_release: app.root.current = "calc"
+
+<Calculator>:
+    name: "calc"
+    canvas.before:
+        Color:
+            rgba: 0.1,0.1,0.6,0.6   # blue background
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    BoxLayout:
+        orientation: "vertical"
+        spacing: 10
+        padding: 20
+
+        TextInput:
+            id: length
+            hint_text: "Floor length (m)"
+            input_filter: "float"
+
+        TextInput:
+            id: width
+            hint_text: "Floor width (m)"
+            input_filter: "float"
+
+        TextInput:
+            id: tile_len
+            hint_text: "Tile length (cm)"
+            input_filter: "float"
+
+        TextInput:
+            id: tile_wid
+            hint_text: "Tile width (cm)"
+            input_filter: "float"
+
+        TextInput:
+            id: tiles_per_carton
+            hint_text: "Tiles per carton"
+            input_filter: "int"
+
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+            spacing: 10
+            Button:
+                text: "Calculate"
+                on_release: root.calculate()
+            Button:
+                text: "Clear"
+                on_release: root.clear()
+
+        Label:
+            id: results
+            text: ""
+            color: 0.1,0.1,0.6,0.6
+            halign: "left"
+            valign: "top"
+            text_size: self.width, None
